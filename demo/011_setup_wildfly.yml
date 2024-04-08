@@ -21,24 +21,24 @@
     #     name: openjdk-11-jdk
     #     state: present
 
-    # - name: Завантажити WildFly 31.0.1 Final
-    #   get_url:
-    #     url: "https://github.com/wildfly/wildfly/releases/download/31.0.1.Final/wildfly-31.0.1.Final.tar.gz"
-    #     dest: "/tmp/wildfly-31.0.1.Final.tar.gz"
-    #     mode: '0644'
+    - name: Завантажити WildFly 31.0.1 Final
+      get_url:
+        url: "https://github.com/wildfly/wildfly/releases/download/31.0.1.Final/wildfly-31.0.1.Final.tar.gz"
+        dest: "/tmp/wildfly-31.0.1.Final.tar.gz"
+        mode: '0644'
 
-    # - name: Розпакувати WildFly
-    #   unarchive:
-    #     src: "/tmp/wildfly-31.0.1.Final.tar.gz"
-    #     dest: "/opt"
-    #     remote_src: yes
-    #     creates: "/opt/wildfly-31.0.1.Final"
+    - name: Розпакувати WildFly
+      unarchive:
+        src: "/tmp/wildfly-31.0.1.Final.tar.gz"
+        dest: "/opt"
+        remote_src: yes
+        creates: "/opt/wildfly-31.0.1.Final"
 
-    # - name: Створити символічне посилання для WildFly
-    #   file:
-    #     src: "/opt/wildfly-31.0.1.Final"
-    #     dest: "/opt/wildfly"
-    #     state: link
+    - name: Створити символічне посилання для WildFly
+      file:
+        src: "/opt/wildfly-31.0.1.Final"
+        dest: "/opt/wildfly"
+        state: link
 
     # - name: Додати користувача WildFly
     #   command: "useradd --system --no-create-home --user-group wildfly"
@@ -50,24 +50,24 @@
     # - name: Додати групу WildFly
     #   command: "chown -R wildfly:wildfly /opt/wildfly"
    
-    # - name: Створити групу wildfly, якщо вона не існує
-    #   ansible.builtin.group:
-    #     name: wildfly
-    #     state: present
+    - name: Створити групу wildfly, якщо вона не існує
+      ansible.builtin.group:
+        name: wildfly
+        state: present
 
-    # - name: Додати системного користувача без домашньої директорії
-    #   ansible.builtin.user:
-    #     name: wildfly
-    #     system: yes
-    #     createhome: no
-    #     group: wildfly
+    - name: Додати системного користувача без домашньої директорії
+      ansible.builtin.user:
+        name: wildfly
+        system: yes
+        createhome: no
+        group: wildfly
           
-    # - name: Змінити власника директорії /opt/wildfly
-    #   ansible.builtin.file:
-    #     path: /opt/wildfly-31.0.1.Final
-    #     owner: wildfly
-    #     group: wildfly
-    #     recurse: true
+    - name: Змінити власника директорії /opt/wildfly
+      ansible.builtin.file:
+        path: /opt/wildfly-31.0.1.Final
+        owner: wildfly
+        group: wildfly
+        recurse: true
 
     # - name: Налаштувати WildFly для автозапуску
     #   template:
