@@ -5,7 +5,7 @@ locals {
   key_name         = "admin_exd"
   private_key_path = "/Users/edgarlubitelev/Desktop/git_main/admin_exd.pem"
 }
-# ansible-playbook  -i 13.60.52.219, --private-key /Users/edgarlubitelev/Desktop/git_main/admin_exd.pem 000_setup.yaml
+
 provider "aws" {
   region = "eu-north-1"
 }
