@@ -1,0 +1,5 @@
+---
+- import_playbook: 021_setup_jdk.yml
+# - import_playbook: 002_setup_wildfly.yml
+# - import_playbook: 003_setup_docker.yml
+####

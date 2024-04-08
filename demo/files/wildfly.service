@@ -1,0 +1,14 @@
+[Unit]
+Description=The WildFly Application Server
+After=syslog.target network.target
+
+[Service]
+User=wildfly
+Group=wildfly
+ExecStart=/opt/wildfly/bin/standalone.sh -b=0.0.0.0
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

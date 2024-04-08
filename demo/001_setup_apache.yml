@@ -1,0 +1,68 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Update repositories cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+
+    - name: Enable Apache mods
+      ansible.builtin.shell: "a2enmod {{ item }}"
+      loop:
+        - "proxy"
+        - "proxy_http"
+        - "ssl"
+      # notify:
+      #   - restart apache
+      register: a2enmod
+
+    - name: Check if /etc/apache2/ssl/ directory exists
+      ansible.builtin.stat:
+        path: /etc/apache2/ssl/
+      register: ssl_dir
+
+    - name: Create directory /etc/apache2/ssl/
+      ansible.builtin.file:
+        path: /etc/apache2/ssl/
+        state: directory
+      when: ssl_dir.stat.exists == false
+
+    - name: Generate private key for SSL
+      openssl_privatekey:
+        path: /etc/apache2/ssl/apache.key
+        size: 2048
+      when: ssl_dir.stat.exists == false
+
+    - name: Create CSR
+      openssl_csr:
+        path: /etc/apache2/ssl/apache.crt
+        privatekey_path: /etc/apache2/ssl/apache.key
+      when: ssl_dir.stat.exists == false
+
+    - name: Create certificate signing request (CSR) for self-signed certificate
+      openssl_certificate:
+        provider: selfsigned
+        path: /etc/apache2/ssl/apache.crt
+        privatekey_path: /etc/apache2/ssl/apache.key
+        csr_path: /etc/apache2/ssl/apache.crt
+      when: ssl_dir.stat.exists == false
+
+    - name: Copy configuration to apache2
+      ansible.builtin.copy:
+        src: ./files/000-default.conf
+        dest: /etc/apache2/sites-available/000-default.conf
+
+    - name: Copy configuration to apache2
+      ansible.builtin.copy:
+        src: ./files/proxy.conf
+        dest: /etc/apache2/mods-enabled/proxy.conf
+
+    - name: Restart service apache2, in all cases
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
