@@ -18,7 +18,7 @@
         - "proxy_http"
         - "ssl"
       # notify:
-      #   - restart apache
+      #   - restart apache 
       register: a2enmod
 
     - name: Check if /etc/apache2/ssl/ directory exists
@@ -66,3 +66,4 @@
       ansible.builtin.service:
         name: apache2
         state: restarted
+        

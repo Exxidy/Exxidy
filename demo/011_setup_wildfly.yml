@@ -1,7 +1,7 @@
 ---
 - name: Встановити WildFly 31.0.1 Final
   hosts: all
-  become: yes
+  become: true
   tasks:
     # - name: Встановити необхідні залежності
     #   apt:
@@ -31,7 +31,7 @@
       unarchive:
         src: "/tmp/wildfly-31.0.1.Final.tar.gz"
         dest: "/opt"
-        remote_src: yes
+        remote_src: true
         creates: "/opt/wildfly-31.0.1.Final"
 
     - name: Створити символічне посилання для WildFly
@@ -39,16 +39,6 @@
         src: "/opt/wildfly-31.0.1.Final"
         dest: "/opt/wildfly"
         state: link
-
-    # - name: Додати користувача WildFly
-    #   command: "useradd --system --no-create-home --user-group wildfly"
-    
-    # - name: Додати користувача та групу WildFly
-    #   ansible.builtin.user:
-    #   name: wildfly
-
-    # - name: Додати групу WildFly
-    #   command: "chown -R wildfly:wildfly /opt/wildfly"
    
     - name: Створити групу wildfly, якщо вона не існує
       ansible.builtin.group:
@@ -58,8 +48,8 @@
     - name: Додати системного користувача без домашньої директорії
       ansible.builtin.user:
         name: wildfly
-        system: yes
-        createhome: no
+        system: true
+        createhome: false
         group: wildfly
           
     - name: Змінити власника директорії /opt/wildfly
@@ -69,20 +59,10 @@
         group: wildfly
         recurse: true
 
-    # - name: Налаштувати WildFly для автозапуску
-    #   template:
-    #     src: "/files/wildfly.service"
-    #     dest: "/etc/systemd/system/wildfly.service"
-
     - name: Copy configuration to WildFly
       ansible.builtin.copy:
         src: ./files/wildfly.service
         dest: /etc/systemd/system/wildfly.service
-
-    # - name: Copy configuration to WildFly
-    #   ansible.builtin.copy:
-    #     src: ./files/wildfly.service
-    #     dest: /etc/systemd/system/wildfly.service
 
     - name: Перезавантажити systemd
       systemd:
@@ -103,54 +83,3 @@
       ansible.builtin.systemd:
         name: apache2
         state: restarted
-
-
-
-# - name: "WildFly installation and configuration"
-#   hosts: all
-#   become: yes
-#   vars:
-#     wildfly_install_workdir: '/opt/'
-#     wildfly_config_base: standalone-ha.xml
-#     wildfly_version: 31.0.1.Final
-#     wildfly_java_package_name: java-11-openjdk-headless.x86_64
-#     wildfly_home: "/opt/wildfly-{{ wildfly_version }}"
-
-#     instance_http_ports:
-#       - 8080
-#       - 8180
-#       - 8280
-#     app:
-#       name: 'info-1.2.war'
-#       url: 'https://drive.google.com/uc?export=download&id=13K7RCqccgH4zAU1RfOjYMehNaHB0A3Iq'
-#   collections:
-#     - middleware_automation.wildfly
-#   roles:
-#     - role: wildfly_install
-#   tasks:
-
-#     - name: "Set up for WildFly instance {{ item }}."
-#       ansible.builtin.include_role:
-#         name: wildfly_systemd
-#       vars:
-#         wildfly_config_base: 'standalone-ha.xml'
-#         wildfly_instance_id: "{{ item }}"
-#         instance_name: "wildfly-{{ wildfly_instance_id }}"
-#         wildfly_config_name: "{{ instance_name }}.xml"
-#         wildfly_basedir_prefix: "/opt/{{ instance_name }}"
-#         service_systemd_env_file: "/etc/wildfly-{{ item }}.conf"
-#         service_systemd_conf_file: "/usr/lib/systemd/system/wildfly-{{ item }}.service"
-#       loop: "{{ range(0,3) | list }}"
-
-#     - name: "Wait for each instance HTTP ports to become available."
-#       ansible.builtin.wait_for:
-#         port: "{{ item }}"
-#       loop: "{{ instance_http_ports }}"
-
-#     - name: "Checks that WildFly server is running and accessible."
-#       ansible.builtin.get_url:
-#         url: "http://localhost:{{ port }}/"
-#         dest: "/opt/{{ port }}"
-#       loop: "{{ instance_http_ports }}"
-#       loop_control:
-#         loop_var: port

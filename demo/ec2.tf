@@ -13,7 +13,7 @@ provider "aws" {
 resource "aws_security_group" "ec2-instal-3-v-1" {
   name        = "Jenkins Security Group"
   description = "CI_CD SecurityGroup"
-  vpc_id = local.vpc_id
+  vpc_id      = local.vpc_id
 
   ingress {
     from_port   = 80
