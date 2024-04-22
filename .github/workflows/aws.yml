@@ -21,17 +21,7 @@ jobs:
         aws-region: eu-north-1
 
     - name: Deploy to EC2
-    - name: Deploy to EC2
+      shell: bash
       run: |
-        # Update the AWS CLI
         pip install --upgrade awscli
-        # Start a new EC2 instance
         aws ec2 run-instances --image-id ami-0914547665e6a707c --count 1 --instance-type t3.micro --key-name admin_exd --security-group-ids sg-0dc9d45360b3dd7a2 --subnet-id subnet-087b7eeb39d5f625b
-
-        # # Wait for the instance to enter the 'running' state
-        # aws ec2 wait instance-running --instance-ids i-0123456789abcdef0
-
-        # # Deploy your application (this will depend on your specific application)
-        # # For example, if you have a web server, you might SCP your files over and then restart the web server
-        # scp -i /path/to/my-key-pair.pem /path/to/myapp user@ec2-198-51-100-1.compute-1.amazonaws.com:/var/www/html
-        # ssh -i /path/to/my-key-pair.pem user@ec2-198-51-100-1.compute-1.amazonaws.com 'sudo service httpd restart'
