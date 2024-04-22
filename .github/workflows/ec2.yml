@@ -2,9 +2,9 @@ name: Deploy to AWS EC2
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "feature/all" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "feature/all" ]
 
 jobs:
 
