@@ -23,8 +23,8 @@ jobs:
       # Prevent prompts and failure when the stack is unchanged
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
-      # - name: Deploy to EC2
-      - run: |
-         pip install --upgrade awscli
-         aws ec2 run-instances --image-id ami-0914547665e6a707c --count 1 --instance-type t3.micro --key-name admin_exd --security-group-ids sg-0dc9d45360b3dd7a2 --subnet-id subnet-087b7eeb39d5f625b
-      # aws ec2 wait instance-running --instance-ids i-
+      # # - name: Deploy to EC2
+      # - run: |
+      #    pip install --upgrade awscli
+      #    aws ec2 run-instances --image-id ami-0914547665e6a707c --count 1 --instance-type t3.micro --key-name admin_exd --security-group-ids sg-0dc9d45360b3dd7a2 --subnet-id subnet-087b7eeb39d5f625b
+      # # aws ec2 wait instance-running --instance-ids i-
